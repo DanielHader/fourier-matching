@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+}
+
+canvas {
+    border: solid black 1px;
+    touch-action: none;
+}
+
+#container {
+    width: 800px;
+    margin: 0 auto;
+}
+
+#fourier-canvas {
+    width: 800px;
+    height: 400px;
+}
+
+#slider-table {
+    width: 100%;
+}
+
+.label-td {
+    width: 15%;
+}
+
+.slider-td {
+    width: 65%;
+}
+
+.input-td {
+    width: 20%;
+}
+
+input[type="range"] {
+    width: 100%;
+}

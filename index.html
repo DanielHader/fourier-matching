@@ -5,46 +5,7 @@
     <title>Fourier Matching</title>
     <meta charset="utf-8">
     <script type="module" src="src/main.js"></script>
-    <style>
-      body {
-	  margin: 0;
-      }
-      
-      canvas {
-	  border: solid black 1px;
-	  touch-action: none;
-      }
-
-      #container {
-	  width: 800px;
-	  margin: 0 auto;
-      }
-
-      #fourier-canvas {
-	  width: 800px;
-	  height: 400px;
-      }
-
-      #slider-table {
-	  width: 100%;
-      }
-
-      .label-td {
-	  width: 15%;
-      }
-
-      .slider-td {
-	  width: 65%;
-      }
-
-      .input-td {
-	  width: 20%;
-      }
-
-      input[type="range"] {
-	  width: 100%;
-      }
-    </style>
+    <link rel="stylesheet" href="default.css">
   </head>
 
   <body>
@@ -53,18 +14,7 @@
 	<h1>Fourier Matching</h1>
 	<p>Learn how the Fourier series works</p>
 	<canvas id="fourier-canvas"></canvas>
-	<table id="slider-table">
-	  <tr>
-	    <td class="label-td">Coefficient 1</td>
-	    <td class="slider-td"><input class="slider" id="slider-1" type="range"></input></td>
-	    <td class="input-td"><input id="input-1"></td>
-	  </tr>
-	  <tr>
-	    <td class="label-td">Coefficient 2</td>
-	    <td class="slider-td"><input class="slider" id="slider-2" type="range"></input></td>
-	    <td class="input-td"><input id="input-2"></td>
-	  </tr>
-	</table>
+	<table id="slider-table"></table>
       </div>
     </div>
   </body>
