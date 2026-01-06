@@ -2,9 +2,9 @@ let canvas, context;
 
 const bounds = {
     x_min: -2,
-    x_max: 2,
+    x_max:  2,
     y_min: -1.2,
-    y_max: 1.2,
+    y_max:  1.2,
 };
 
 const sliders = [];
@@ -29,17 +29,21 @@ function affine(x, in_min, in_max, out_min, out_max) {
 
 function plot() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-
-    /*
+    
+    context.strokeStyle = "#888888";
     context.lineWidth = 1;
     context.beginPath();
     for (let x = Math.ceil(bounds.x_min); x <= Math.floor(bounds.x_max); x++) {
-	
-	//context.moveTo(
+	const px = affine(x, bounds.x_min, bounds.x_max, 0, canvas.width);
+	context.moveTo(px, 0);
+	context.lineTo(px, canvas.height);
     }
+    const py_axis = affine(0, bounds.y_min, bounds.y_max, 0, canvas.height);
+    context.moveTo(0, py_axis);
+    context.lineTo(canvas.width, py_axis);
     context.stroke();
-    */
-    
+
+    context.strokeStyle = "#000000";
     context.lineWidth = 2;
     context.beginPath();
     for (let px = 0; px <= canvas.width; px++) {
