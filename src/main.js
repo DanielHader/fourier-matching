@@ -38,7 +38,7 @@ function plot() {
 	context.moveTo(px, 0);
 	context.lineTo(px, canvas.height);
     }
-    const py_axis = affine(0, bounds.y_min, bounds.y_max, 0, canvas.height);
+    const py_axis = affine(0, bounds.y_min, bounds.y_max, canvas.height, 0);
     context.moveTo(0, py_axis);
     context.lineTo(canvas.width, py_axis);
     context.stroke();
@@ -50,7 +50,7 @@ function plot() {
 	const x = affine(px, 0, canvas.width, bounds.x_min, bounds.x_max);
 	//const x = px / canvas.width * (bounds.x_max - bounds.x_min) + bounds.x_min;
 	const y = fourier(x);
-	const py = affine(y, bounds.y_min, bounds.y_max, 0, canvas.height);
+	const py = affine(y, bounds.y_min, bounds.y_max, canvas.height, 0);
 	//const py = (y - bounds.y_min) / (bounds.y_max - bounds.y_min) * canvas.height;
 	if (px == 0) {
 	    context.moveTo(px, py);
