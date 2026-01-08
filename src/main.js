@@ -7,8 +7,10 @@ const bounds = {
     y_max:  1.2,
 };
 
-const sliders = [];
-const inputs = [];
+const amplitude_sliders = [];
+const amplitude_inputs = [];
+const phase_sliders = [];
+const phase_inputs = [];
 
 const amplitudes = [0];
 const phases = [0];
@@ -18,7 +20,7 @@ function fourier(x) {
     let y = 0;
     const scale = 2 * Math.PI / period;
     for (let i = 0; i < amplitudes.length; i++) {
-	y += amplitudes[i] * Math.cos(scale * i * x - phases[i]);
+	y += amplitudes[i] * Math.cos(scale * (i * x - phases[i]));
     }
     return y;
 }
@@ -29,29 +31,25 @@ function affine(x, in_min, in_max, out_min, out_max) {
 
 function plot() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    context.strokeStyle = "#888888";
-    context.lineWidth = 1;
-    context.beginPath();
-    for (let x = Math.ceil(bounds.x_min); x <= Math.floor(bounds.x_max); x++) {
-	const px = affine(x, bounds.x_min, bounds.x_max, 0, canvas.width);
-	context.moveTo(px, 0);
-	context.lineTo(px, canvas.height);
-    }
-    const py_axis = affine(0, bounds.y_min, bounds.y_max, canvas.height, 0);
-    context.moveTo(0, py_axis);
-    context.lineTo(canvas.width, py_axis);
-    context.stroke();
 
+    let y_lower = -1.2;
+    let y_upper = 1.2;
+    const xs = [];
+    const ys = [];
+    for (let px = 0; px < canvas.width; px++) {
+	const x = affine(px, 0, canvas.width, bounds.x_min, bounds.x_max);
+	const y = fourier(x);
+	ys.push(y);
+
+	if (y - 0.2 < y_lower) y_lower = y - 0.2;
+	if (y + 0.2 > y_upper) y_upper = y + 0.2;
+    }
+    
     context.strokeStyle = "#000000";
     context.lineWidth = 2;
     context.beginPath();
     for (let px = 0; px <= canvas.width; px++) {
-	const x = affine(px, 0, canvas.width, bounds.x_min, bounds.x_max);
-	//const x = px / canvas.width * (bounds.x_max - bounds.x_min) + bounds.x_min;
-	const y = fourier(x);
-	const py = affine(y, bounds.y_min, bounds.y_max, canvas.height, 0);
-	//const py = (y - bounds.y_min) / (bounds.y_max - bounds.y_min) * canvas.height;
+	const py = affine(ys[px], y_lower, y_upper, canvas.height, 0);
 	if (px == 0) {
 	    context.moveTo(px, py);
 	} else {
@@ -59,6 +57,32 @@ function plot() {
 	}
     }
     context.stroke();
+
+    context.lineWidth = 1;
+    for (let x = Math.ceil(bounds.x_min); x <= Math.floor(bounds.x_max); x++) {
+	if (x == 0) context.strokeStyle = "#880000";
+	else context.strokeStyle = "#888888";
+	
+	context.beginPath();
+	
+	const px = affine(x, bounds.x_min, bounds.x_max, 0, canvas.width);
+	context.moveTo(px, 0);
+	context.lineTo(px, canvas.height);
+
+	context.stroke();
+    }
+    for (let y = Math.ceil(y_lower); y <= Math.floor(y_upper); y++) {
+	if (y == 0) context.strokeStyle = "#008800";
+	else context.strokeStyle = "#888888";
+	    
+	context.beginPath();
+	
+	const py = affine(y, y_lower, y_upper, canvas.height, 0);
+	context.moveTo(0, py);
+	context.lineTo(canvas.width, py);
+
+	context.stroke();
+    }
 }
 
 function resize_canvas() {
@@ -71,10 +95,17 @@ function resize_canvas() {
     canvas.height = buffer_height;
 }
 
-function slider_event(event, index) {
+function amplitude_slider_event(event, index) {
     const value = Number(event.target.value);
     amplitudes[index] = value;
-    inputs[index].value = value;
+    amplitude_inputs[index].value = value;
+    plot();
+}
+
+function phase_slider_event(event, index) {
+    const value = Number(event.target.value);
+    phases[index] = value;
+    phase_inputs[index].value = value;
     plot();
 }
 
@@ -82,49 +113,63 @@ function init(degree) {
     canvas = document.getElementById("fourier-canvas");
     context = canvas.getContext("2d");
 
-    const slider_table = document.getElementById("slider-table");
+    const control_div = document.getElementById("controls");
     for (let i = 1; i <= degree; i++) {
-	const tr = document.createElement("tr");
-
-	const label_td = Object.assign(document.createElement("td"), {
-	    className: "label-td",
+	const a_label = Object.assign(document.createElement("span"), {
+	    className: "label-span",
 	    textContent: `Coefficient ${i}`,
 	});
 
-	const slider_td = Object.assign(document.createElement("td"), {
-	    className: "slider-td",
+	const p_label = Object.assign(document.createElement("span"), {
+	    className: "label-span",
+	    textContent: `Phase ${i}`,
 	});
-	const slider = Object.assign(document.createElement("input"), {
+
+	const a_slider = Object.assign(document.createElement("input"), {
 	    className: "slider",
 	    type: "range",
-	    id: `slider-${i}$`,
+	    id: `amplitude-slider-${i}$`,
 	    value: 0.0,
-	    min: -2.0,
-	    max: 2.0,
-	    step: 0.1,
+	    min: -1.0,
+	    max: 1.0,
+	    step: 0.05,
 	});
-	slider_td.appendChild(slider);
-	slider.addEventListener("input", (event) => slider_event(event, i));
-	sliders[i] = slider;
-	
-	const input_td = Object.assign(document.createElement("td"), {
-	    className: "input-td",
-	});
-	const input = Object.assign(document.createElement("input"), {
-	    id: `input-${i}$`,
-	    value: 0.0,
-	});
-	input_td.appendChild(input);
-	inputs[i] = input;
+	a_slider.addEventListener("input", (event) => amplitude_slider_event(event, i));
+	amplitude_sliders[i] = a_slider;
 
-	tr.appendChild(label_td);
-	tr.appendChild(slider_td);
-	tr.appendChild(input_td);
+	const p_slider = Object.assign(document.createElement("input"), {
+	    className: "slider",
+	    type: "range",
+	    id: `phase-slider-${i}$`,
+	    value: 0.0,
+	    min: 0.0,
+	    max: 1.0,
+	    step: 0.05,
+	});
+	p_slider.addEventListener("input", (event) => phase_slider_event(event, i));
+	phase_sliders[i] = p_slider;
 	
-	slider_table.appendChild(tr);
+	const a_input = Object.assign(document.createElement("input"), {
+	    id: `amplitude-input-${i}$`,
+	    value: 0.0,
+	});
+	amplitude_inputs[i] = a_input;
+
+	const p_input = Object.assign(document.createElement("input"), {
+	    id: `phase-input-${i}$`,
+	    value: 0.0,
+	});
+	phase_inputs[i] = p_input;
 
 	amplitudes.push(0);
 	phases.push(0);
+
+	controls.appendChild(a_label);
+	controls.appendChild(a_slider);
+	controls.appendChild(a_input);
+	controls.appendChild(p_label);
+	controls.appendChild(p_slider);
+	controls.appendChild(p_input);
     }
     
     resize_canvas();

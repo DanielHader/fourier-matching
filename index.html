@@ -5,6 +5,7 @@
     <title>Fourier Matching</title>
     <meta charset="utf-8">
     <script type="module" src="src/main.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <link rel="stylesheet" href="default.css">
   </head>
 
@@ -12,9 +13,18 @@
     <div id="content">
       <div id="container">
 	<h1>Fourier Matching</h1>
-	<p>Learn how the Fourier series works</p>
+	<p>
+	  This interactive demo lets you play around with Fourier series parameters.
+	  The Fourier series is defined as a big sum of periodic functions, typically sine or cosine waves.
+	  Each periodic function in the sum has a different integer period and, surprisingly, with enough different periods and carefully chosen amplitudes and phase shifts, any periodic function can be approximated.
+	  The form of the Fourier series used in this demo is
+	  \[\sum_{n=0}^N A_n\cos\big(2\pi(nx - p_n)\big)\]
+	  where \(A_n\) is the \(n\)th amplitude and \(p_n\) the \(n\)th phase.
+	  Play around with the various amplitudes and phases and see what shapes you can make.
+	</p>
 	<canvas id="fourier-canvas"></canvas>
-	<table id="slider-table"></table>
+	<div id="controls">
+	</div>
       </div>
     </div>
   </body>

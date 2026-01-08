@@ -1,9 +1,10 @@
 body {
     margin: 0;
+    padding: 0;
 }
 
 canvas {
-    border: solid black 1px;
+    border: 1px solid black;
     touch-action: none;
 }
 
@@ -18,21 +19,15 @@ canvas {
 }
 
 #slider-table {
+    width: 800px;
+    border: 1px solid black;
+    table-layout: fixed;
+}
+
+#controls {
     width: 100%;
+    display: grid;
+    grid-template-columns: 120px 1fr 80px;
 }
 
-.label-td {
-    width: 15%;
-}
 
-.slider-td {
-    width: 65%;
-}
-
-.input-td {
-    width: 20%;
-}
-
-input[type="range"] {
-    width: 100%;
-}
